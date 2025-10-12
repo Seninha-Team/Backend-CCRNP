@@ -33,6 +33,27 @@ app.get('/pecas', async (req, res) => {
   }
 });
 
+// Atualizar peça
+app.put('/pecas/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { nome, quantidade } = req.body;
+    if (!nome || quantidade === undefined) return res.status(400).json({ error: 'Nome e quantidade são obrigatórios' });
+
+    const result = await pool.query(
+      'UPDATE public.pecas SET nome = $1, quantidade = $2 WHERE id = $3 RETURNING *',
+      [nome, quantidade, id]
+    );
+
+    if (result.rows.length === 0) return res.status(404).json({ error: 'Peça não encontrada' });
+    console.log('Atualizado no banco:', result.rows[0]); // log detalhado
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error('Erro ao atualizar peça:', err);
+    res.status(500).json({ error: 'Erro ao atualizar peça' });
+  }
+});
+
 // Start do servidor
 app.listen(3001, () => console.log('Servidor rodando na porta 3001'));
 
