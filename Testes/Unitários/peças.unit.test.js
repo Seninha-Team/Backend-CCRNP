@@ -1,5 +1,5 @@
 // testes/unit/pecas.unit.test.js
-process.env.USE_MOCK_POOL = 'true'; // ativa o mock
+process.env.USE_MOCK_POOL = 'true'; // ativa o mock do Banco de Dados
 
 const request = require('supertest');
 const { app, pool } = require('../../server');
