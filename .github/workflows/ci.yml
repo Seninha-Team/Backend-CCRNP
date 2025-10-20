@@ -26,14 +26,18 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      # Garante que o Jest tenha permissão de execução no ambiente Linux do GitHub Actions
+      - name: Fix Jest Permissions
+        run: chmod +x ./node_modules/.bin/jest
+
       - name: Run ${{ matrix.test-type }} tests
         run: |
           if [ "${{ matrix.test-type }}" = "unit" ]; then
             echo "Running unit tests with mock DB..."
-            npx jest --testPathPattern=Testes/Unitários
+            npx jest --testPathPattern="Testes/Unitários"
           else
             echo "Running integration tests with mock DB..."
-            npx jest --testPathPattern=Testes/Integração
+            npx jest --testPathPattern="Testes/Integração"
           fi
         env:
           USE_MOCK_POOL: true
