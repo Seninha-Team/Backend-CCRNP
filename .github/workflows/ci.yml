@@ -7,8 +7,12 @@ on:
     branches: [develop]
 
 jobs: 
-  build:
+  test:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        test-type: [unit, integration]
 
     steps:
       - name: Checkout repository
@@ -22,8 +26,17 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run server
-        run: npm start
+      - name: Fix Jest Permissions
+        run: chmod +x ./node_modules/.bin/jest
 
-      - name: Run tests
-        run: npm test
+      - name: Run ${{ matrix.test-type }} tests
+        run: |
+          if [ "${{ matrix.test-type }}" = "unit" ]; then
+            echo "Running unit tests with mock DB..."
+            npx jest "Testes/Unitários"
+          else
+            echo "Running integration tests with mock DB..."
+            npx jest "Testes/Integração"
+          fi
+        env:
+          USE_MOCK_POOL: true
