@@ -24,3 +24,6 @@ jobs:
 
       - name: Run server
         run: npm start
+
+      - name: Run tests
+        run: npm test
